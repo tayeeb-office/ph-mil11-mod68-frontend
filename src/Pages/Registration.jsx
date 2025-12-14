@@ -75,6 +75,15 @@ const Registration = () => {
         });
 
         setUser({ ...auth.currentUser });
+
+        axios.post('http://localhost:5000/users',data)
+        .then( res => {
+            console.log(res.data)
+        })
+        .catch( err =>{
+            console.log(err)
+        })
+
         navigate("/");
       }
 
