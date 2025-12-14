@@ -1,0 +1,54 @@
+{
+  "Dhaka": [
+    "Dhamrai",
+    "Dohar",
+    "Keraniganj",
+    "Nawabganj",
+    "Savar"
+  ],
+  "Chattogram": [
+    "Anwara",
+    "Banshkhali",
+    "Boalkhali",
+    "Fatikchhari",
+    "Hathazari",
+    "Mirsharai",
+    "Patiya",
+    "Rangunia",
+    "Sandwip",
+    "Sitakunda"
+  ],
+  "Sylhet": [
+    "Balaganj",
+    "Beanibazar",
+    "Bishwanath",
+    "Companiganj",
+    "Fenchuganj",
+    "Golapganj",
+    "Gowainghat",
+    "Jaintiapur",
+    "Kanaighat",
+    "Zakiganj"
+  ],
+  "Rajshahi": [
+    "Bagha",
+    "Bagmara",
+    "Charghat",
+    "Durgapur",
+    "Godagari",
+    "Mohanpur",
+    "Paba",
+    "Puthia",
+    "Tanore"
+  ],
+  "Khulna": [
+    "Batiaghata",
+    "Dacope",
+    "Dumuria",
+    "Koyra",
+    "Paikgachha",
+    "Phultala",
+    "Rupsa",
+    "Terokhada"
+  ]
+}

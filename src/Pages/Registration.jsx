@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
@@ -8,6 +8,8 @@ import { updateProfile } from "firebase/auth";
 import auth from "../Firebase/firebase.config";
 import { ImCross } from "react-icons/im";
 import Swal from "sweetalert2";
+import axios, { isCancel, AxiosError } from "axios";
+import { fillOffset } from "motion";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,71 +20,96 @@ const Registration = () => {
 
   const navigate = useNavigate();
 
-  // const isValid = hasUpper && hasLower && hasSixChars;
-
-  const handelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault();
 
     const email = e.target.email.value;
     const pass = e.target.pass.value;
-
     const username = e.target.username.value;
-    const imageLink = e.target.imageLink.value;
-
+    const bloodGroup = e.target.bloodGroup.value;
+    const district = e.target.district.value;
+    const upazila = e.target.upazila.value;
+    const photo = e.target.imageLink.files[0];
     setError("");
 
     const uppercase = /[A-Z]/;
     const lowercase = /[a-z]/;
 
-    if (pass.length <= 6) {
-      return setError("Passoword should be more than 6 character");
-    } else if (!uppercase.test(pass)) {
-      return setError("Passoword should have atleast one uppercase");
-    } else if (!lowercase.test(pass)) {
-      return setError("Passoword should have atleast one lowercase");
-    }
+    if (pass.length < 6)
+      return setError("Password should be at least 6 characters");
+    if (!uppercase.test(pass))
+      return setError("Password should have at least one uppercase");
+    if (!lowercase.test(pass))
+      return setError("Password should have at least one lowercase");
+    if (!photo) return setError("Please select an image");
 
-    register(email, pass)
-      .then(() => {
-        updateProfile(auth.currentUser, {
+    try {
+      const formData = new FormData();
+      formData.append("image", photo);
+
+      const res = await axios.post(
+        "https://api.imgbb.com/1/upload?key=36f1131d464584a0940eec4d57324ba4",
+        formData
+      );
+
+      const imageUrl = res.data.data.display_url;
+
+      const data = {
+        email,
+        pass,
+        username,
+        imageUrl,
+        bloodGroup,
+        district,
+        upazila,
+      };
+
+      //   console.log(data);
+
+      if (res.data.success == true) {
+        await register(email, pass);
+
+        await updateProfile(auth.currentUser, {
           displayName: username,
-          photoURL: imageLink,
-        })
-          .then(() => {
-            setUser({ ...auth.currentUser });
-            navigate("/");
-            Swal.fire({
-              title: "Registration Completed",
-              icon: "success",
-              draggable: true,
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong!",
-              footer: '<a href="#">Why do I have this issue?</a>',
-            });
-          });
-      })
-      .catch((error) => {
-        console.log(error);
+          photoURL: imageUrl,
+        });
+
+        setUser({ ...auth.currentUser });
+        navigate("/");
+      }
+
+      Swal.fire({
+        title: "Registration Completed",
+        icon: "success",
+        draggable: true,
       });
+    } catch (err) {
+      console.log(err);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
-  const googleSignup = () => {
-    google()
-      .then((res) => {
-        const user = res.user;
-        setUser(user);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const [bloodGroups, setBloodGroups] = useState([]);
+  useEffect(() => {
+    fetch("/bloodGroups.json")
+      .then((res) => res.json())
+      .then((data) => setBloodGroups(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState({});
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  useEffect(() => {
+    fetch("/districts.json")
+      .then((res) => res.json())
+      .then((data) => setDistricts(data));
+
+    fetch("/upazilas.json")
+      .then((res) => res.json())
+      .then((data) => setUpazilas(data));
+  }, []);
 
   return (
     <div>
@@ -100,19 +127,6 @@ const Registration = () => {
             </div>
 
             <form onSubmit={handelSubmit} className="mt-8 space-y-5">
-              {/* Username */}
-              <div className="space-y-2 flex flex-col gap-1">
-                <label className="text-sm font-semibold text-black">
-                  Username
-                </label>
-                <input
-                  name="username"
-                  type="text"
-                  placeholder="Write username here"
-                  className="w-full h-12 rounded-lg border-2 text-black placeholder:text-slate-500 px-4 "
-                />
-              </div>
-
               {/* Email */}
               <div className="space-y-2 flex flex-col gap-1">
                 <label className="text-sm font-semibold text-black">
@@ -126,17 +140,78 @@ const Registration = () => {
                 />
               </div>
 
-              {/* Image */}
+              {/* Full Name */}
               <div className="space-y-2 flex flex-col gap-1">
                 <label className="text-sm font-semibold text-black">
-                  Photo URL
+                  Full Name
                 </label>
                 <input
+                  name="username"
                   type="text"
-                  name="imageLink"
-                  placeholder="Write image link here"
+                  placeholder="Write Full Name here"
                   className="w-full h-12 rounded-lg border-2 text-black placeholder:text-slate-500 px-4 "
                 />
+              </div>
+
+              {/* Blood Group */}
+              <div className="space-y-2 flex flex-col gap-1">
+                <label className="text-sm font-semibold text-black">
+                  Blood Group
+                </label>
+                <select
+                  name="bloodGroup"
+                  className="w-full h-12 rounded-lg border-2 text-black px-4"
+                  required
+                >
+                  <option value="">Select blood group</option>
+
+                  {bloodGroups.map((group) => (
+                    <option key={group.id} value={group.value}>
+                      {group.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* District */}
+              <div className="space-y-2 flex flex-col gap-1">
+                <label className="text-sm font-semibold text-black">
+                  District
+                </label>
+                <select
+                  name="district"
+                  className="w-full h-12 rounded-lg border-2 text-black px-4"
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  required
+                >
+                  <option value="">Select district</option>
+                  {districts.map((d) => (
+                    <option key={d.id} value={d.value}>
+                      {d.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Upazila */}
+              <div className="space-y-2 flex flex-col gap-1">
+                <label className="text-sm font-semibold text-black">
+                  Upazila
+                </label>
+                <select
+                  name="upazila"
+                  className="w-full h-12 rounded-lg border-2 text-black px-4"
+                  disabled={!selectedDistrict}
+                  required
+                >
+                  <option value="">Select upazila</option>
+                  {selectedDistrict &&
+                    upazilas[selectedDistrict]?.map((u, index) => (
+                      <option key={index} value={u}>
+                        {u}
+                      </option>
+                    ))}
+                </select>
               </div>
 
               {/* Passoward */}
@@ -160,6 +235,19 @@ const Registration = () => {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+              </div>
+
+              {/* Image */}
+              <div className="space-y-2 flex flex-col gap-1">
+                <label className="text-sm font-semibold text-black">
+                  Upload Image
+                </label>
+                <input
+                  type="file"
+                  name="imageLink"
+                  placeholder="Write image link here"
+                  className="w-full font-bold py-2.5 h-12 rounded-lg border-2 text-black placeholder:text-slate-500 px-4 "
+                />
               </div>
 
               {/* Pass Validation*/}

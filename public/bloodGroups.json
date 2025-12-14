@@ -1,0 +1,10 @@
+[
+  { "id": 1, "label": "A+", "value": "A+" },
+  { "id": 2, "label": "A-", "value": "A-" },
+  { "id": 3, "label": "B+", "value": "B+" },
+  { "id": 4, "label": "B-", "value": "B-" },
+  { "id": 5, "label": "O+", "value": "O+" },
+  { "id": 6, "label": "O-", "value": "O-" },
+  { "id": 7, "label": "AB+", "value": "AB+" },
+  { "id": 8, "label": "AB-", "value": "AB-" }
+]
