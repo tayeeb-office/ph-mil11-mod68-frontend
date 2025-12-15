@@ -10,7 +10,7 @@ import { AuthContext } from "../Provider/Provider";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const [setEmail] = useState("");
+  const [email, setEmail] = useState("");
 
   const { setUser, user, google } = useContext(AuthContext);
 

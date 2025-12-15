@@ -42,6 +42,7 @@ const Provider = ({ children }) => {
     user,
     setUser,
     loading,
+    role
   };
 
   return (

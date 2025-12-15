@@ -29,32 +29,14 @@ const Navbar = () => {
           Home
         </NavLink>
       </li>
-      <li>
-        <NavLink to="/pets&supplies" className="text-base-content font-bold text-l">
-          Pets & Supplies
-        </NavLink>
-      </li>
-      {user && (
+      { user && (
         <li>
-          <NavLink to="/addlisting" className="text-base-content font-bold text-l">
-            Add Listing
+          <NavLink to="/dashboard" className="text-base-content font-bold text-l">
+            Dashboard
           </NavLink>
         </li>
       )}
-      {user && (
-        <li>
-          <NavLink to="/mylistings" className="text-base-content font-bold text-l">
-            My Listings
-          </NavLink>
-        </li>
-      )}
-      {user && (
-        <li>
-          <NavLink to="/myorders" className="text-base-content font-bold text-l">
-            My Orders
-          </NavLink>
-        </li>
-      )}
+
     </>
   );
   return (
