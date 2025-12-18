@@ -34,6 +34,20 @@ const User = () => {
     }
   };
 
+  const handelrole = async (email, role) => {
+    try {
+      const res = await axiosSecure.patch(
+        `/update/user/role?email=${email}&role=${role}`
+      );
+
+      console.log(res.data);
+      fetchUsers(); 
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   console.log(users);
   return (
     <div>
@@ -93,11 +107,14 @@ const User = () => {
                       <button onClick={()=>handelStatus(item.email, 'active')} className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
                         Unblock
                       </button>
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                      <button onClick={()=>handelrole(item.email, 'volunteer')} className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
                         Volunteer
                       </button>
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                      <button onClick={()=>handelrole(item.email, 'admin')} className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
                         Admin
+                      </button>
+                      <button onClick={()=>handelrole(item.email, 'donor')} className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                        Donor
                       </button>
                     </div>
                   </div>

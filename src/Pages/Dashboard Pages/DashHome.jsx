@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Provider/Provider";
 import axios from "axios";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const DashHome = () => {
   const [myrequests, setMyrequests] = useState([]);
@@ -31,7 +32,47 @@ const DashHome = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [user?.email]);
+  }, [role]);
+
+  const axiosSecure = useAxiosSecure();
+
+  const [id, setId] = useState([]);
+
+  const fetchid = async () => {
+    try {
+      const res = await axiosSecure.get("/requests");
+      setId(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchid();
+  }, [axiosSecure]);
+
+  const handelStatus = async (id, status) => {
+    setRequests((prev) =>
+      prev.map((item) => (item._id === id ? { ...item, status } : item))
+    );
+
+    setMyrequests((prev) =>
+      prev.map((item) => (item._id === id ? { ...item, status } : item))
+    );
+
+    try {
+      await axiosSecure.patch(
+        `/update/request/status?id=${id}&status=${status}`
+      );
+    } catch (error) {
+      console.error(error);
+
+      const res = await axios.get("http://localhost:5000/dashboard/requests");
+      setRequests(res.data);
+    }
+  };
+
+  console.log(id);
 
   return (
     <div>
@@ -86,12 +127,23 @@ const DashHome = () => {
                       <div>{item.requesterName}</div>
                       <div>{item.requesterEmail}</div>
                       <div className="flex gap-1">
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Status Done
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Status Cancel
-                        </button>
+                        {item.status == "pending" && (
+                          <>
+                            <button
+                              onClick={() => handelStatus(item._id, "done")}
+                              className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                            >
+                              Status Done
+                            </button>
+                            <button
+                              onClick={() => handelStatus(item._id, "cancel")}
+                              className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                            >
+                              Status Cancel
+                            </button>
+                          </>
+                        )}
+
                         <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
                           View
                         </button>
@@ -108,8 +160,7 @@ const DashHome = () => {
               </div>
             </div>
           )}
-          
-          
+
           {/* Donor Recent Requests */}
           {role === "donor" && (
             <div className="mt-10 rounded-3xl bg-[#F7EFF0]">
@@ -154,12 +205,22 @@ const DashHome = () => {
                       <div>{item.requesterName}</div>
                       <div>{item.requesterEmail}</div>
                       <div className="flex gap-1">
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Status Done
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Status Cancel
-                        </button>
+                         {item.status == "pending" && (
+                          <>
+                            <button
+                              onClick={() => handelStatus(item._id, "done")}
+                              className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                            >
+                              Status Done
+                            </button>
+                            <button
+                              onClick={() => handelStatus(item._id, "cancel")}
+                              className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                            >
+                              Status Cancel
+                            </button>
+                          </>
+                        )}
                         <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
                           View
                         </button>

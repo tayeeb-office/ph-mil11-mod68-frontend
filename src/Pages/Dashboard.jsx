@@ -61,7 +61,6 @@ const Dashboard = () => {
               <img src={favicon} alt="favicon" className="w-8 h-8" />
               <div className="leading-tight">
                 <p className="font-extrabold text-sm">BloodLink</p>
-                <p className="text-[11px] text-slate-500 -mt-0.5">Donor Portal</p>
               </div>
             </div>
 
@@ -85,7 +84,9 @@ const Dashboard = () => {
             "w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col",
             "transition-transform duration-200",
             "md:translate-x-0",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+            sidebarOpen
+              ? "translate-x-0"
+              : "-translate-x-full md:translate-x-0",
           ].join(" ")}
         >
           {/* Mobile close button */}
@@ -163,7 +164,9 @@ const Dashboard = () => {
                   <p className="font-semibold text-sm truncate">
                     {user?.displayName || "User"}
                   </p>
-                  <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                  <p className="text-xs text-slate-500 truncate">
+                    {user?.email}
+                  </p>
                 </div>
               </div>
 
