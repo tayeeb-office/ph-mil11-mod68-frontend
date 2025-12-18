@@ -12,8 +12,10 @@ export const AuthContext = createContext();
 
 const Provider = ({ children }) => {
   const [loading, setLoading] = useState(true);
+  const [roleloading, setRoleLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
 
   const register = (email, pass) => {
     return createUserWithEmailAndPassword(auth, email, pass);
@@ -33,7 +35,9 @@ const Provider = ({ children }) => {
     if(!user) return;
     axios.get(`http://localhost:5000/users/role/${user.email}`)
     .then(res =>{
-      setRole(res.data.role)
+      setRole(res.data.role);
+      setStatus(res.data.status)
+      setRoleLoading(false);
     })
   }, [user]);
 
@@ -42,7 +46,9 @@ const Provider = ({ children }) => {
     user,
     setUser,
     loading,
-    role
+    role,
+    roleloading,
+    status
   };
 
   return (

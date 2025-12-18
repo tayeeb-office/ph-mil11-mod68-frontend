@@ -270,6 +270,26 @@ const Registration = () => {
               </div>
             </div>
 
+            {/* Password */}
+            <div className="space-y-2 flex flex-col gap-1">
+              <label className="text-sm font-semibold text-black">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Re-Write password here"
+                  className="w-full h-12 rounded-lg border-2 text-black placeholder:text-slate-500 px-4 pr-12"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-black"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            </div>
+
             {/* Image */}
             <div className="space-y-2 flex flex-col gap-1">
               <label className="text-sm font-semibold text-black">Upload Image</label>
