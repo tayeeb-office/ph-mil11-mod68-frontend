@@ -150,7 +150,10 @@ const AllReq = () => {
                         </button>
                       </>
                     )}
-
+                    
+                    { role =='admin' && (
+                    
+                    <>
                     <Link
                       to={`/dashboard/my-donation-requests/view/${item._id}`}
                     >
@@ -173,6 +176,9 @@ const AllReq = () => {
                     >
                       Delete
                     </button>
+                    </>
+                    )}
+                    
                   </div>
                 </div>
               ))}
