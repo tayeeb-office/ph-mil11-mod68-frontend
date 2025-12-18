@@ -16,6 +16,8 @@ import CreateReq from "./Pages/Dashboard Pages/CreateReq.jsx";
 import Profile from "./Pages/Dashboard Pages/Profile.jsx";
 import User from "./Pages/Dashboard Pages/User.jsx";
 import AllReq from "./Pages/Dashboard Pages/AllReq.jsx";
+import Update from "./Pages/Dashboard Pages/Update.jsx";
+import View from "./Pages/Dashboard Pages/View.jsx";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +77,14 @@ const router = createBrowserRouter([
       { 
         path: "/dashboard/profile", 
         Component : Profile
+      },
+      { 
+        path: "/dashboard/my-donation-requests/update/:id", 
+        Component : Update
+      },
+      { 
+        path: "/dashboard/my-donation-requests/view/:id", 
+        element : <PrivateRoute> <View></View> </PrivateRoute>
       },
       //   {
       //     path: "/category-filtered-product/:category",

@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Provider/Provider";
 import axios from "axios";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { Link, Links, Navigate } from "react-router";
+import Swal from "sweetalert2";
 
 const DashHome = () => {
   const [myrequests, setMyrequests] = useState([]);
@@ -74,6 +76,32 @@ const DashHome = () => {
 
   console.log(id);
 
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This request will be deleted permanently!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EE2B34",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await axiosSecure.delete(`/requests/${id}`);
+
+      setRequests((prev) => prev.filter((item) => item._id !== id));
+      setMyrequests((prev) => prev.filter((item) => item._id !== id));
+
+      Swal.fire("Deleted!", "Request has been deleted.", "success");
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error!", "Failed to delete request.", "error");
+    }
+  };
+
   return (
     <div>
       <title>Dashboard</title>
@@ -144,13 +172,24 @@ const DashHome = () => {
                           </>
                         )}
 
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          View
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Edit
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                        <Link
+                          to={`/dashboard/my-donation-requests/view/${item._id}`}
+                        >
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            View
+                          </button>
+                        </Link>
+                        <Link
+                          to={`/dashboard/my-donation-requests/update/${item._id}`}
+                        >
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            Edit
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                        >
                           Delete
                         </button>
                       </div>
@@ -205,7 +244,7 @@ const DashHome = () => {
                       <div>{item.requesterName}</div>
                       <div>{item.requesterEmail}</div>
                       <div className="flex gap-1">
-                         {item.status == "pending" && (
+                        {item.status == "pending" && (
                           <>
                             <button
                               onClick={() => handelStatus(item._id, "done")}
@@ -221,13 +260,24 @@ const DashHome = () => {
                             </button>
                           </>
                         )}
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          View
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                          Edit
-                        </button>
-                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                        <Link
+                          to={`/dashboard/my-donation-requests/view/${item._id}`}
+                        >
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            View
+                          </button>
+                        </Link>
+                        <Link
+                          to={`/dashboard/my-donation-requests/update/${item._id}`}
+                        >
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            Edit
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                        >
                           Delete
                         </button>
                       </div>
@@ -238,9 +288,11 @@ const DashHome = () => {
             </div>
           )}
 
-          <button className="mt-6 px-3 py-1 rounded bg-rose-600 text-white text-sm">
-            View All Request
-          </button>
+          <Link to={"/dashboard/my-donation-requests"}>
+            <button className="mt-6 px-3 py-1 rounded bg-rose-600 text-white text-sm">
+              View All Request
+            </button>
+          </Link>
         </div>
       </div>
     </div>
