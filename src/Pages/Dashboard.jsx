@@ -59,7 +59,7 @@ const Dashboard = () => {
 
             <div className="flex items-center gap-2">
               <img src={favicon} alt="favicon" className="w-8 h-8" />
-              <div className="leading-tight">
+              <div>
                 <p className="font-extrabold text-sm">BloodLink</p>
               </div>
             </div>
@@ -107,7 +107,6 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="font-extrabold">BloodLink</p>
-                <p className="text-xs text-slate-500 -mt-0.5">Donor Portal</p>
               </div>
             </div>
           </div>

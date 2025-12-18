@@ -136,7 +136,7 @@ const DashHome = () => {
                   </div>
 
                   {/* Rows */}
-                  {requests.map((item) => (
+                  {requests.slice(-6).map((item) => (
                     <div
                       key={item._id}
                       className="grid text-black text-center px-8 py-6 border-t "
@@ -225,7 +225,7 @@ const DashHome = () => {
                   </div>
 
                   {/* Rows */}
-                  {myrequests.slice(-3).map((item) => (
+                  {myrequests.slice(-6).map((item) => (
                     <div
                       key={item._id}
                       className="grid text-black text-center px-8 py-6 border-t "

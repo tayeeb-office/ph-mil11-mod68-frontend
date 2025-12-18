@@ -36,6 +36,11 @@ const Navbar = () => {
           </NavLink>
         </li>
       )}
+      <li>
+        <NavLink to="/fund" className="text-base-content font-bold text-l">
+          Funding
+        </NavLink>
+      </li>
 
     </>
   );

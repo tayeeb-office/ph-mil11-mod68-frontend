@@ -18,6 +18,9 @@ import User from "./Pages/Dashboard Pages/User.jsx";
 import AllReq from "./Pages/Dashboard Pages/AllReq.jsx";
 import Update from "./Pages/Dashboard Pages/Update.jsx";
 import View from "./Pages/Dashboard Pages/View.jsx";
+import Fund from "./Pages/Fund.jsx";
+import PaymentSuccess from "./Pages/PaymentSuccess.jsx";
+import PaymentCancelled from "./Pages/PaymentCancelled.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +43,18 @@ const router = createBrowserRouter([
       //       </PrivateRoute>
       //     ),
       //   },
+      {
+        path: "/fund",
+        element : <PrivateRoute> <Fund></Fund> </PrivateRoute>
+      },
+      {
+        path: "/payment-success",
+        Component: PaymentSuccess
+      },
+      {
+        path: "/payment-cancelled",
+        Component: PaymentCancelled
+      },
       {
         path: "/registration",
         Component: Registration,
