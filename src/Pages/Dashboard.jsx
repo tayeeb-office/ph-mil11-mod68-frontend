@@ -8,6 +8,7 @@ import { AuthContext } from "../Provider/Provider";
 import favicon from "../assets/favicon.png";
 import { CiSquareQuestion } from "react-icons/ci";
 import { MdManageAccounts } from "react-icons/md";
+import { FaHome } from "react-icons/fa";
 
 const Dashboard = () => {
   const { user, role } = useContext(AuthContext);
@@ -148,6 +149,8 @@ const Dashboard = () => {
               )}
 
               <NavItem to="/dashboard/profile" icon={FiUser} label="Profile" />
+
+              <NavItem to="/" icon={FaHome} label="Home" />
             </div>
           </nav>
 

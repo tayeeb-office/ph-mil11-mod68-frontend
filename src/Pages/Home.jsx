@@ -36,9 +36,11 @@ const Home = () => {
                 </button>
               </Link>
 
+              <Link to={'/search'}>
               <button className="border border-gray-300 hover:border-red-600 hover:text-red-600 px-6 py-3 rounded-lg font-medium">
                 Search Donors
               </button>
+              </Link>
             </div>
           </div>
 
