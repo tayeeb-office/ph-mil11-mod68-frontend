@@ -21,6 +21,7 @@ import View from "./Pages/Dashboard Pages/View.jsx";
 import Fund from "./Pages/Fund.jsx";
 import PaymentSuccess from "./Pages/PaymentSuccess.jsx";
 import PaymentCancelled from "./Pages/PaymentCancelled.jsx";
+import SearchDonor from "./Pages/SearchDonor .jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       //       </PrivateRoute>
       //     ),
       //   },
+      {
+        path: "/search",
+        Component : SearchDonor
+      },
       {
         path: "/fund",
         element : <PrivateRoute> <Fund></Fund> </PrivateRoute>

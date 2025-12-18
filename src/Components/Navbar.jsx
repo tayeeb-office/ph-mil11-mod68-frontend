@@ -37,6 +37,11 @@ const Navbar = () => {
         </li>
       )}
       <li>
+        <NavLink to="/search" className="text-base-content font-bold text-l">
+          Search Donor
+        </NavLink>
+      </li>
+      <li>
         <NavLink to="/fund" className="text-base-content font-bold text-l">
           Funding
         </NavLink>
