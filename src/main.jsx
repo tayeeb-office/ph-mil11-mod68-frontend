@@ -32,18 +32,6 @@ const router = createBrowserRouter([
         path: "/", 
         Component: Home 
       },
-      //   {
-      //     path: "/category-filtered-product/:category",
-      //     Component: CategoryPage,
-      //   },
-      //   {
-      //     path: "/all/:myId",
-      //     element: (
-      //       <PrivateRoute>
-      //         <Details></Details>
-      //       </PrivateRoute>
-      //     ),
-      //   },
       {
         path: "/search",
         Component : SearchDonor
@@ -105,19 +93,7 @@ const router = createBrowserRouter([
       { 
         path: "/dashboard/my-donation-requests/view/:id", 
         element : <PrivateRoute> <View></View> </PrivateRoute>
-      },
-      //   {
-      //     path: "/category-filtered-product/:category",
-      //     Component: CategoryPage,
-      //   },
-      //   {
-      //     path: "/all/:myId",
-      //     element: (
-      //       <PrivateRoute>
-      //         <Details></Details>
-      //       </PrivateRoute>
-      //     ),
-      //   },
+      }
     ],
   },
   {

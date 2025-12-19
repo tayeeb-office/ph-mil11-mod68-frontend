@@ -71,7 +71,9 @@ const Profile = () => {
 
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:5000/users/${user.email}`);
+        const res = await fetch(
+          `https://ph-mil11-mod68-backend.vercel.app/users/${user.email}`
+        );
         const data = await res.json();
 
         setDbUser(data);
@@ -240,7 +242,9 @@ const Profile = () => {
 
         <div className="rounded-2xl bg-white shadow-2xl px-6 py-10">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-black">Profile Information</h1>
+            <h1 className="text-2xl font-bold text-black">
+              Profile Information
+            </h1>
             <p className="text-[14px] mt-2 text-slate-800">
               Click “Update Information” to edit your profile.
             </p>
@@ -259,7 +263,9 @@ const Profile = () => {
 
             {/* Full Name */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Full Name</label>
+              <label className="text-sm font-semibold text-black">
+                Full Name
+              </label>
               <input
                 name="username"
                 value={form.username}
@@ -274,7 +280,9 @@ const Profile = () => {
 
             {/* Blood Group */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Blood Group</label>
+              <label className="text-sm font-semibold text-black">
+                Blood Group
+              </label>
               <select
                 name="bloodGroup"
                 value={form.bloodGroup}
@@ -296,7 +304,9 @@ const Profile = () => {
 
             {/* District */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">District</label>
+              <label className="text-sm font-semibold text-black">
+                District
+              </label>
               <select
                 name="districtId"
                 value={form.districtId}
@@ -318,7 +328,9 @@ const Profile = () => {
 
             {/* Upazila */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Upazila</label>
+              <label className="text-sm font-semibold text-black">
+                Upazila
+              </label>
               <select
                 name="upazilaId"
                 value={form.upazilaId}
@@ -342,7 +354,9 @@ const Profile = () => {
               type="submit"
               disabled={isFormDisabled}
               className={`w-full h-11 rounded-lg font-semibold text-white ${
-                isFormDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-[#EE2B34] hover:bg-[#d9252c]"
+                isFormDisabled
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#EE2B34] hover:bg-[#d9252c]"
               }`}
             >
               Save Changes
@@ -350,7 +364,10 @@ const Profile = () => {
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-800">
-            Go back to <Link to="/"><span className="text-[#EE2B34] font-semibold">Home</span></Link>
+            Go back to{" "}
+            <Link to="/">
+              <span className="text-[#EE2B34] font-semibold">Home</span>
+            </Link>
           </p>
         </div>
       </div>

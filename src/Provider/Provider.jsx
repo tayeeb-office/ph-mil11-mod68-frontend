@@ -32,13 +32,14 @@ const Provider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if(!user) return;
-    axios.get(`http://localhost:5000/users/role/${user.email}`)
-    .then(res =>{
-      setRole(res.data.role);
-      setStatus(res.data.status)
-      setRoleLoading(false);
-    })
+    if (!user) return;
+    axios
+      .get(`https://ph-mil11-mod68-backend.vercel.app/users/role/${user.email}`)
+      .then((res) => {
+        setRole(res.data.role);
+        setStatus(res.data.status);
+        setRoleLoading(false);
+      });
   }, [user]);
 
   const authData = {
@@ -48,7 +49,7 @@ const Provider = ({ children }) => {
     loading,
     role,
     roleloading,
-    status
+    status,
   };
 
   return (

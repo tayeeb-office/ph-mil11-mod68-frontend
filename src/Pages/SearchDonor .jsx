@@ -73,7 +73,7 @@ const SearchDonor = () => {
       if (upazilaName) params.append("upazila", upazilaName);
 
       const res = await fetch(
-        `http://localhost:5000/donor-search?${params.toString()}`
+        `https://ph-mil11-mod68-backend.vercel.app/donor-search?${params.toString()}`
       );
       const data = await res.json();
 
@@ -99,7 +99,6 @@ const SearchDonor = () => {
           className="mt-8 rounded-2xl bg-white p-6 shadow"
         >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-   
             <select
               value={bloodGroup}
               onChange={(e) => setBloodGroup(e.target.value)}
@@ -142,7 +141,7 @@ const SearchDonor = () => {
                 </option>
               ))}
             </select>
-            
+
             <button
               type="submit"
               className="h-12 rounded-lg bg-red-500 font-semibold text-white hover:bg-red-600"
@@ -151,7 +150,6 @@ const SearchDonor = () => {
             </button>
           </div>
         </form>
-
 
         {searched && (
           <div className="mt-8 rounded-2xl bg-white shadow">
@@ -168,7 +166,7 @@ const SearchDonor = () => {
                 No donors found.
               </div>
             ) : (
-              <div >
+              <div>
                 {donors.map((d) => (
                   <div
                     key={d._id}

@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
@@ -25,12 +24,10 @@ const Registration = () => {
 
   const [bloodGroups, setBloodGroups] = useState([]);
 
-  
   const [districts, setDistricts] = useState([]);
   const [upazilaMap, setUpazilaMap] = useState({});
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
 
-  
   useEffect(() => {
     fetch("/bloodGroups.json")
       .then((res) => res.json())
@@ -38,7 +35,6 @@ const Registration = () => {
       .catch(console.error);
   }, []);
 
-  
   useEffect(() => {
     const loadGeo = async () => {
       const dRes = await fetch("/districts.json");
@@ -50,7 +46,6 @@ const Registration = () => {
       const dList = extractTableData(dJson, "districts");
       const uList = extractTableData(uJson, "upazilas");
 
-      
       const grouped = uList.reduce((acc, item) => {
         const key = String(item.district_id);
         if (!acc[key]) acc[key] = [];
@@ -80,17 +75,20 @@ const Registration = () => {
 
     setError("");
 
-    
     const uppercase = /[A-Z]/;
     const lowercase = /[a-z]/;
 
-    if (pass.length < 6) return setError("Password should be at least 6 characters");
-    if (!uppercase.test(pass)) return setError("Password should have at least one uppercase");
-    if (!lowercase.test(pass)) return setError("Password should have at least one lowercase");
+    if (pass.length < 6)
+      return setError("Password should be at least 6 characters");
+    if (!uppercase.test(pass))
+      return setError("Password should have at least one uppercase");
+    if (!lowercase.test(pass))
+      return setError("Password should have at least one lowercase");
     if (!photo) return setError("Please select an image");
 
-    
-    const districtObj = districts.find((d) => String(d.id) === String(districtId));
+    const districtObj = districts.find(
+      (d) => String(d.id) === String(districtId)
+    );
     const upazilaObj = (upazilaMap[districtId] || []).find(
       (u) => String(u.id) === String(upazilaId)
     );
@@ -102,7 +100,6 @@ const Registration = () => {
     if (!upazilaNameEn) return setError("Invalid upazila selected");
 
     try {
-      
       const formData = new FormData();
       formData.append("image", photo);
 
@@ -128,7 +125,6 @@ const Registration = () => {
 
       setUser({ ...auth.currentUser });
 
-      
       const userPayload = {
         email,
         pass,
@@ -140,7 +136,10 @@ const Registration = () => {
         role: "donor",
       };
 
-      await axios.post("http://localhost:5000/users", userPayload);
+      await axios.post(
+        "https://ph-mil11-mod68-backend.vercel.app/users",
+        userPayload
+      );
 
       Swal.fire({
         title: "Registration Completed",
@@ -173,7 +172,9 @@ const Registration = () => {
           <form onSubmit={handelSubmit} className="mt-8 space-y-5">
             {/* Email */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Email Address</label>
+              <label className="text-sm font-semibold text-black">
+                Email Address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -185,7 +186,9 @@ const Registration = () => {
 
             {/* Full Name */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Full Name</label>
+              <label className="text-sm font-semibold text-black">
+                Full Name
+              </label>
               <input
                 name="username"
                 type="text"
@@ -197,7 +200,9 @@ const Registration = () => {
 
             {/* Blood Group */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Blood Group</label>
+              <label className="text-sm font-semibold text-black">
+                Blood Group
+              </label>
               <select
                 name="bloodGroup"
                 className="w-full h-12 rounded-lg border-2 text-black px-4"
@@ -214,7 +219,9 @@ const Registration = () => {
 
             {/* District (ENGLISH ONLY) */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">District</label>
+              <label className="text-sm font-semibold text-black">
+                District
+              </label>
               <select
                 name="district"
                 className="w-full h-12 rounded-lg border-2 text-black px-4"
@@ -233,7 +240,9 @@ const Registration = () => {
 
             {/* Upazila (ENGLISH ONLY) */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Upazila</label>
+              <label className="text-sm font-semibold text-black">
+                Upazila
+              </label>
               <select
                 name="upazila"
                 className="w-full h-12 rounded-lg border-2 text-black px-4"
@@ -251,7 +260,9 @@ const Registration = () => {
 
             {/* Password */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Password</label>
+              <label className="text-sm font-semibold text-black">
+                Password
+              </label>
               <div className="relative">
                 <input
                   name="pass"
@@ -272,7 +283,9 @@ const Registration = () => {
 
             {/* Password */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Confirm Password</label>
+              <label className="text-sm font-semibold text-black">
+                Confirm Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -292,7 +305,9 @@ const Registration = () => {
 
             {/* Image */}
             <div className="space-y-2 flex flex-col gap-1">
-              <label className="text-sm font-semibold text-black">Upload Image</label>
+              <label className="text-sm font-semibold text-black">
+                Upload Image
+              </label>
               <input
                 type="file"
                 name="imageLink"

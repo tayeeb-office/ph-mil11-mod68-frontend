@@ -16,7 +16,9 @@ const DashHome = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:5000/dashboard/requests?email=${user.email}`)
+      .get(
+        `https://ph-mil11-mod68-backend.vercel.app/dashboard/requests?email=${user.email}`
+      )
       .then((res) => {
         setMyrequests(res.data);
       })
@@ -27,7 +29,7 @@ const DashHome = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/dashboard/requests")
+      .get("https://ph-mil11-mod68-backend.vercel.app/dashboard/requests")
       .then((res) => {
         setRequests(res.data);
       })
@@ -69,7 +71,9 @@ const DashHome = () => {
     } catch (error) {
       console.error(error);
 
-      const res = await axios.get("http://localhost:5000/dashboard/requests");
+      const res = await axios.get(
+        "https://ph-mil11-mod68-backend.vercel.app/dashboard/requests"
+      );
       setRequests(res.data);
     }
   };
