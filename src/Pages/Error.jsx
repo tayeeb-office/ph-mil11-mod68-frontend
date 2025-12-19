@@ -26,7 +26,7 @@ const Error = () => {
             </p>
           </div>
 
-          <div className="mx-auto mt-8 max-w-xl">
+          {/* <div className="mx-auto mt-8 max-w-xl">
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link to={'/'}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-200"
@@ -35,7 +35,7 @@ const Error = () => {
                 Return Home
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
