@@ -22,6 +22,7 @@ import Fund from "./Pages/Fund.jsx";
 import PaymentSuccess from "./Pages/PaymentSuccess.jsx";
 import PaymentCancelled from "./Pages/PaymentCancelled.jsx";
 import SearchDonor from "./Pages/SearchDonor .jsx";
+import Error from "./Pages/Error.jsx";
 
 const router = createBrowserRouter([
   {
@@ -100,10 +101,10 @@ const router = createBrowserRouter([
     path: "/loading",
     Component: Loading
   },
-  //   {
-  //     path: "*",
-  //     Component: Error,
-  //   },
+    {
+      path: "*",
+      Component: Error,
+    },
 ]);
 
 createRoot(document.getElementById("root")).render(
