@@ -14,6 +14,8 @@ const MyReq = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const size = 10;
 
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const totalPages = Math.ceil(totalRequest / size);
   const pages = useMemo(() => [...Array(totalPages).keys()], [totalPages]);
 
@@ -21,10 +23,10 @@ const MyReq = () => {
     const load = async () => {
       try {
         const url = `/my-request?page=${currentPage}&size=${size}`;
-
         const res = await axiosSecure.get(url);
-        setRequests(res.data.request);
-        setTotalRequest(res.data.totalRequest);
+
+        setRequests(res.data.request || []);
+        setTotalRequest(res.data.totalRequest || 0);
       } catch (err) {
         console.error(err);
       }
@@ -32,6 +34,14 @@ const MyReq = () => {
 
     if (role) load();
   }, [role, currentPage, axiosSecure]);
+
+  const filteredRequests = useMemo(() => {
+    if (statusFilter === "all") return requests;
+
+    return requests.filter(
+      (r) => String(r.status).toLowerCase() === statusFilter
+    );
+  }, [requests, statusFilter]);
 
   const handelStatus = async (id, status) => {
     setRequests((prev) =>
@@ -42,8 +52,6 @@ const MyReq = () => {
       await axiosSecure.patch(`/update/request/status?id=${id}&status=${status}`);
     } catch (err) {
       console.error(err);
-      // reload page data if failed
-      setCurrentPage((p) => p);
     }
   };
 
@@ -76,6 +84,7 @@ const MyReq = () => {
   const handlePrev = () => {
     if (currentPage > 0) setCurrentPage(currentPage - 1);
   };
+
   const handleNext = () => {
     if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
   };
@@ -83,11 +92,26 @@ const MyReq = () => {
   return (
     <div className="min-h-screen px-4 py-10">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-5xl font-extrabold">All Requests</h1>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-5xl font-extrabold">My Requests</h1>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-11 rounded-lg border-2 bg-white px-4 text-black font-semibold"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="done">Done</option>
+            <option value="cancel">Canceled</option>
+          </select>
+        </div>
 
         <div className="mt-10 rounded-3xl bg-[#F7EFF0]">
           <div className="overflow-x-auto">
             <div className="min-w-[2000px]">
+              {/* Table Head */}
               <div
                 className="grid text-center px-8 py-5 font-extrabold text-black bg-white border-t"
                 style={{
@@ -107,74 +131,96 @@ const MyReq = () => {
                 <div>Actions</div>
               </div>
 
-              {requests.map((item) => (
-                <div
-                  key={item._id}
-                  className="grid text-black text-center px-8 py-6 border-t"
-                  style={{
-                    gridTemplateColumns:
-                      "180px 140px 140px 160px 160px 140px 120px 160px 260px 400px",
-                  }}
-                >
-                  <div>{item.recipientName}</div>
-                  <div>{item.district}</div>
-                  <div>{item.upazila}</div>
-                  <div>{item.donationDate}</div>
-                  <div>{item.donationTime}</div>
-                  <div>{item.bloodGroup}</div>
-                  <div className="font-semibold">{item.status}</div>
-                  <div>{item.requesterName}</div>
-                  <div>{item.requesterEmail}</div>
-
-                  <div className="flex gap-1">
-                        <button
-                          onClick={() => handelStatus(item._id, "done")}
-                          className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
-                        >
-                          Status Done
-                        </button>
-                        <button
-                          onClick={() => handelStatus(item._id, "cancel")}
-                          className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
-                        >
-                          Status Cancel
-                        </button>
-
-                    <Link to={`/dashboard/my-donation-requests/view/${item._id}`}>
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                        View
-                      </button>
-                    </Link>
-
-                    <Link to={`/dashboard/my-donation-requests/update/${item._id}`}>
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                        Edit
-                      </button>
-                    </Link>
-
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
+              {/* Rows */}
+              {filteredRequests.length === 0 ? (
+                <div className="py-10 text-center text-gray-600 font-semibold">
+                  No requests found for:{" "}
+                  <span className="text-rose-600">{statusFilter}</span>
                 </div>
-              ))}
+              ) : (
+                filteredRequests.map((item) => (
+                  <div
+                    key={item._id}
+                    className="grid text-black text-center px-8 py-6 border-t"
+                    style={{
+                      gridTemplateColumns:
+                        "180px 140px 140px 160px 160px 140px 120px 160px 260px 400px",
+                    }}
+                  >
+                    <div>{item.recipientName}</div>
+                    <div>{item.district}</div>
+                    <div>{item.upazila}</div>
+                    <div>{item.donationDate}</div>
+                    <div>{item.donationTime}</div>
+                    <div>{item.bloodGroup}</div>
+                    <div className="font-semibold">{item.status}</div>
+                    <div>{item.requesterName}</div>
+                    <div>{item.requesterEmail}</div>
+
+                    <div className="flex gap-1">
+                      {item.status === "pending" && (
+                        <>
+                          <button
+                            onClick={() => handelStatus(item._id, "done")}
+                            className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                          >
+                            Status Done
+                          </button>
+                          <button
+                            onClick={() => handelStatus(item._id, "cancel")}
+                            className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                          >
+                            Status Cancel
+                          </button>
+                        </>
+                      )}
+
+                      <Link
+                        to={`/dashboard/my-donation-requests/view/${item._id}`}
+                      >
+                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                          View
+                        </button>
+                      </Link>
+
+                      <Link
+                        to={`/dashboard/my-donation-requests/update/${item._id}`}
+                      >
+                        <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                          Edit
+                        </button>
+                      </Link>
+
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
 
         {/* Pagination */}
         <div className="flex justify-center mt-12 gap-4">
-          <button onClick={handlePrev} className="btn" disabled={currentPage === 0}>
+          <button
+            onClick={handlePrev}
+            className="btn"
+            disabled={currentPage === 0}
+          >
             Prev
           </button>
 
           {pages.map((page) => (
             <button
               key={page}
-              className={`btn ${page === currentPage ? "bg-[#435585] text-white" : ""}`}
+              className={`btn ${
+                page === currentPage ? "bg-[#435585] text-white" : ""
+              }`}
               onClick={() => setCurrentPage(page)}
             >
               {page + 1}

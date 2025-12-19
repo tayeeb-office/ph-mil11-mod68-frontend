@@ -143,7 +143,7 @@ const AllReq = () => {
                   className="grid text-black text-center px-8 py-6 border-t"
                   style={{
                     gridTemplateColumns:
-                      "180px 140px 140px 160px 160px 140px 120px 160px 260px 400px",
+                      "180px 140px 140px 160px 160px 140px 120px 160px 260px 450px",
                   }}
                 >
                   <div>{item.recipientName}</div>
