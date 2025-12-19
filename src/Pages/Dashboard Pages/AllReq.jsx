@@ -8,22 +8,23 @@ const AllReq = () => {
   const { role } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
-  const [requests, setRequests] = useState([]); 
+  const [requests, setRequests] = useState([]);
   const [totalRequest, setTotalRequest] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(0);
   const size = 10;
 
+  const [statusFilter, setStatusFilter] = useState("all"); 
+
   const totalPages = Math.ceil(totalRequest / size);
   const pages = useMemo(() => [...Array(totalPages).keys()], [totalPages]);
-
 
   useEffect(() => {
     const load = async () => {
       try {
-        const url =`/all-request?page=${currentPage}&size=${size}`;
-
+        const url = `/all-request?page=${currentPage}&size=${size}`;
         const res = await axiosSecure.get(url);
+
         setRequests(res.data.request);
         setTotalRequest(res.data.totalRequest);
       } catch (err) {
@@ -34,6 +35,14 @@ const AllReq = () => {
     if (role) load();
   }, [role, currentPage, axiosSecure]);
 
+  const filteredRequests = useMemo(() => {
+    if (statusFilter === "all") return requests;
+
+    return requests.filter((r) => {
+      const st = String(r?.status || "").trim().toLowerCase();
+      return st === statusFilter;
+    });
+  }, [requests, statusFilter]);
 
   const handelStatus = async (id, status) => {
     setRequests((prev) =>
@@ -41,16 +50,19 @@ const AllReq = () => {
     );
 
     try {
-      await axiosSecure.patch(
-        `/update/request/status?id=${id}&status=${status}`
-      );
+      await axiosSecure.patch(`/update/request/status?id=${id}&status=${status}`);
     } catch (err) {
       console.error(err);
-      // reload page data if failed
-      setCurrentPage((p) => p);
+      // reload current page if failed
+      try {
+        const res = await axiosSecure.get(`/all-request?page=${currentPage}&size=${size}`);
+        setRequests(res.data.request);
+        setTotalRequest(res.data.totalRequest);
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
-
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -68,7 +80,6 @@ const AllReq = () => {
     try {
       await axiosSecure.delete(`/requests/${id}`);
 
-      // remove from UI
       setRequests((prev) => prev.filter((item) => item._id !== id));
       setTotalRequest((prev) => Math.max(prev - 1, 0));
 
@@ -78,7 +89,6 @@ const AllReq = () => {
       Swal.fire("Error!", "Failed to delete request.", "error");
     }
   };
-
 
   const handlePrev = () => {
     if (currentPage > 0) setCurrentPage(currentPage - 1);
@@ -90,7 +100,20 @@ const AllReq = () => {
   return (
     <div className="min-h-screen px-4 py-10">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-5xl font-extrabold">All Requests</h1>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-5xl font-extrabold">All Requests</h1>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-11 rounded-lg border-2 bg-white px-4 text-black font-semibold"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="done">Done</option>
+            <option value="canceled">Canceled</option>
+          </select>
+        </div>
 
         <div className="mt-10 rounded-3xl bg-[#F7EFF0]">
           <div className="overflow-x-auto">
@@ -114,7 +137,7 @@ const AllReq = () => {
                 <div>Actions</div>
               </div>
 
-              {requests.map((item) => (
+              {filteredRequests.map((item) => (
                 <div
                   key={item._id}
                   className="grid text-black text-center px-8 py-6 border-t"
@@ -143,64 +166,59 @@ const AllReq = () => {
                           Status Done
                         </button>
                         <button
-                          onClick={() => handelStatus(item._id, "cancel")}
+                          onClick={() => handelStatus(item._id, "canceled")}
                           className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
                         >
-                          Status Cancel
+                          Status Canceled
                         </button>
                       </>
                     )}
-                    
-                    { role =='admin' && (
-                    
-                    <>
-                    <Link
-                      to={`/dashboard/my-donation-requests/view/${item._id}`}
-                    >
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                        View
-                      </button>
-                    </Link>
 
-                    <Link
-                      to={`/dashboard/my-donation-requests/update/${item._id}`}
-                    >
-                      <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
-                        Edit
-                      </button>
-                    </Link>
+                    {role === "admin" && (
+                      <>
+                        <Link to={`/dashboard/my-donation-requests/view/${item._id}`}>
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            View
+                          </button>
+                        </Link>
 
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
-                    >
-                      Delete
-                    </button>
-                    </>
+                        <Link to={`/dashboard/my-donation-requests/update/${item._id}`}>
+                          <button className="px-3 py-1 rounded bg-rose-600 text-white text-sm">
+                            Edit
+                          </button>
+                        </Link>
+
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          className="px-3 py-1 rounded bg-rose-600 text-white text-sm"
+                        >
+                          Delete
+                        </button>
+                      </>
                     )}
-                    
                   </div>
                 </div>
               ))}
+
+              {filteredRequests.length === 0 && (
+                <div className="p-10 text-center text-gray-600 font-semibold">
+                  No requests found for this status.
+                </div>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Pagination (still works) */}
         <div className="flex justify-center mt-12 gap-4">
-          <button
-            onClick={handlePrev}
-            className="btn"
-            disabled={currentPage === 0}
-          >
+          <button onClick={handlePrev} className="btn" disabled={currentPage === 0}>
             Prev
           </button>
 
           {pages.map((page) => (
             <button
               key={page}
-              className={`btn ${
-                page === currentPage ? "bg-[#435585] text-white" : ""
-              }`}
+              className={`btn ${page === currentPage ? "bg-[#435585] text-white" : ""}`}
               onClick={() => setCurrentPage(page)}
             >
               {page + 1}
